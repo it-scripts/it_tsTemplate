@@ -1,0 +1,79 @@
+{
+  "general": {
+    "welcome": "Willkommen bei IT-Scripts FiveM TypeScript Template!",
+    "open_ui_help": "Drücke F5 oder nutze /template um dieses Interface zu öffnen.",
+    "ui_opened": "Das Interface wurde geöffnet.",
+    "ui_closed": "Das Interface wurde geschlossen.",
+    "server_status_online": "Online",
+    "server_status_offline": "Offline",
+    "action_executed": "Aktion ausgeführt: %{action}"
+  },
+  "ui": {
+    "title": "IT-Scripts FiveM Template",
+    "badge": "TypeScript & Vue 3",
+    "subtitle": "High-Performance NUI Boilerplate für FiveM",
+    "tabs": {
+      "dashboard": "Dashboard",
+      "actions": "Aktionen",
+      "settings": "Einstellungen",
+      "info": "Dokumentation"
+    },
+    "player_card": {
+      "title": "Spielerdaten",
+      "name": "Name",
+      "server_id": "Server-ID",
+      "coordinates": "GPS-Koordinaten",
+      "heading": "Blickrichtung"
+    },
+    "server_card": {
+      "title": "Serverstatus",
+      "server_time": "Serverzeit",
+      "players": "Spieler online",
+      "uptime": "Serverlaufzeit",
+      "ping_button": "Serverdaten aktualisieren",
+      "pinging": "Aktualisiere..."
+    },
+    "actions": {
+      "title": "NUI & Backend Interaktion",
+      "desc": "Sende Testdaten vom Vue NUI an den FiveM Client und das Server-Backend.",
+      "input_label": "Nachricht an Server",
+      "input_placeholder": "z. B. Hallo vom Vue 3 Frontend!",
+      "category_label": "Kategorie",
+      "send_button": "An Server senden",
+      "sending": "Sende...",
+      "last_response": "Letzte Serverantwort"
+    },
+    "settings": {
+      "title": "Konfiguration",
+      "language_label": "Sprache / Language",
+      "language_desc": "Wechselt die Sprache für UI und FiveM Benachrichtigungen.",
+      "sounds_label": "UI Soundeffekte",
+      "sounds_desc": "Akustisches Feedback bei Klick-Aktionen abspielen.",
+      "debug_label": "Debug-Modus",
+      "debug_desc": "Ausführliche Konsolen-Logs im FiveM Client aktivieren."
+    },
+    "info": {
+      "title": "Template Spezifikationen",
+      "desc": "Dieses Template bietet eine moderne, typsichere Architektur für professionelle FiveM-Ressourcen.",
+      "features": {
+        "ts": "100% TypeScript für Client, Server und UI",
+        "vue": "Vue 3 mit Composition API & Script Setup",
+        "tailwind": "TailwindCSS für schnelle & responsive Styles",
+        "i18n": "Vollständig modulares Übersetzungssystem",
+        "nui": "Typsichere NUI Callbacks & Events mit Mocking-Support",
+        "ci": "Automatisierter Build- & Release-Workflow mit GitHub Actions"
+      }
+    },
+    "close": "Schließen"
+  },
+  "notifications": {
+    "action_success_title": "Serveraktion erfolgreich",
+    "action_success_body": "Die Serverantwort wurde erfolgreich empfangen.",
+    "ping_success_title": "Serverdaten aktualisiert",
+    "ping_success_body": "Aktuelle Serverstatistiken erfolgreich empfangen.",
+    "locale_changed_title": "Sprache geändert",
+    "locale_changed_body": "Die Sprache wurde erfolgreich auf Deutsch gesetzt.",
+    "error_title": "Fehler aufgetreten",
+    "error_body": "Die Aktion konnte nicht ausgeführt werden."
+  }
+}

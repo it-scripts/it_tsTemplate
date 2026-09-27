@@ -1,0 +1,25 @@
+{
+  "name": "it_tsTemplate",
+  "version": "1.0.0",
+  "description": "Modern FiveM Resource Template in TypeScript with Vue 3, TailwindCSS & Translation System",
+  "author": "IT-Scripts",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:web": "npm --prefix web run dev",
+    "build:web": "npm --prefix web run build",
+    "build:scripts": "node scripts/build.mjs",
+    "watch:scripts": "node scripts/build.mjs --watch",
+    "build": "npm run build:web && npm run build:scripts",
+    "package": "node scripts/package.mjs"
+  },
+  "devDependencies": {
+    "@citizenfx/client": "^2.0.35805-1",
+    "@citizenfx/server": "^2.0.35805-1",
+    "@types/node": "^26.6.3",
+    "archiver": "^8.0.0",
+    "esbuild": "^0.28.2",
+    "fs-extra": "^11.4.1",
+    "typescript": "^7.0.2"
+  }
+}

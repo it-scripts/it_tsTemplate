@@ -1,0 +1,77 @@
+name: Automatic FiveM Resource Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release Version (z. B. v1.0.0)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Install Root & Web Dependencies
+        run: |
+          npm install
+          npm --prefix web install
+
+      - name: 🔨 Build & Package FiveM Resource
+        run: |
+          npm run package
+
+      - name: 🏷️ Determine Release Tag
+        id: vars
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            TAG_NAME="${{ github.event.inputs.version }}"
+          else
+            # Lese Version aus package.json oder erstelle Build-Tag
+            PKG_VERSION=$(node -p "require('./package.json').version")
+            TAG_NAME="v${PKG_VERSION}-${{ github.run_number }}"
+          fi
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "Release Tag: $TAG_NAME"
+
+      - name: 🚀 Create GitHub Release & Upload Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          name: "Release ${{ steps.vars.outputs.tag }}"
+          body: |
+            ## 🚀 Automated Release ${{ steps.vars.outputs.tag }}
+
+            ### ✨ Enthaltene Features
+            - Vollständig kompiliertes FiveM TypeScript Client & Server Script (`dist/`)
+            - Produktionsfertiges Vue 3 + TailwindCSS NUI Dashboard (`dist/web/`)
+            - Modulares Übersetzungssystem (`locales/`)
+
+            ### 📦 Installation
+            1. Lade die unten angehängte Datei `it_tsTemplate.zip` herunter.
+            2. Entpacke den Ordner `it_tsTemplate` in den `resources`-Ordner deines FiveM-Servers.
+            3. Füge `ensure it_tsTemplate` zu deiner `server.cfg` hinzu.
+          files: |
+            release/it_tsTemplate.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

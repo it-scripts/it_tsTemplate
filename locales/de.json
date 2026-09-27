@@ -1,0 +1,46 @@
+{
+  "general": {
+    "welcome": "Willkommen bei IT-Scripts FiveM TypeScript Template!",
+    "open_ui_help": "Drücke ~INPUT_REPLAY_START_STOPPABLE_RECORDING~ oder tippe /%{command}, um das Interface zu öffnen.",
+    "ui_opened": "Das Interface wurde geöffnet.",
+    "ui_closed": "Das Interface wurde geschlossen.",
+    "server_status_online": "Server online",
+    "server_status_offline": "Server nicht erreichbar",
+    "action_executed": "Aktion erfolgreich ausgeführt: %{action}"
+  },
+  "ui": {
+    "title": "IT FiveM TypeScript Template",
+    "subtitle": "Modernes Vue 3 + TailwindCSS NUI Dashboard",
+    "tab_dashboard": "Dashboard",
+    "tab_actions": "Aktionen",
+    "tab_settings": "Einstellungen",
+    "tab_info": "Info",
+    "player_info": "Spielerinformationen",
+    "server_info": "Serverstatus",
+    "ping_server": "Server anpingen",
+    "pinging": "Pinge...",
+    "fetch_data": "Daten abrufen",
+    "fetching": "Lade Daten...",
+    "trigger_notification": "Benachrichtigung testen",
+    "send_custom_event": "Custom Event senden",
+    "input_placeholder": "Gebe eine Nachricht ein...",
+    "close": "Schließen",
+    "system_locale": "Sprache auswählen",
+    "stats": {
+      "player_name": "Spielername",
+      "server_id": "Server-ID",
+      "coordinates": "Koordinaten",
+      "server_time": "Serverzeit",
+      "online_players": "Spieler online",
+      "server_uptime": "Laufzeit"
+    }
+  },
+  "notifications": {
+    "action_success_title": "Erfolg",
+    "action_success_body": "Deine Eingabe '%{message}' wurde vom Server empfangen und verarbeitet!",
+    "data_loaded_title": "Daten geladen",
+    "data_loaded_body": "Die Serverdaten wurden erfolgreich aktualisiert.",
+    "error_title": "Fehler",
+    "error_body": "Ein unerwarteter Fehler ist aufgetreten: %{error}"
+  }
+}

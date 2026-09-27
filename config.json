@@ -1,0 +1,9 @@
+{
+  "debug": false,
+  "defaultLocale": "de",
+  "ui": {
+    "command": "template",
+    "keybind": "F5",
+    "description": "Öffne das IT-Scripts TypeScript Template Interface"
+  }
+}
