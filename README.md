@@ -34,6 +34,7 @@ it_tsTemplate/
 │   └── en.json
 ├── scripts/
 │   ├── build.mjs                # TypeScript Build mit esbuild
+│   ├── bump-version.mjs         # Automatischer Version-Bump (patch, minor, major)
 │   ├── changelog.mjs            # Automatische Changelog-Generierung (Conventional Commits)
 │   ├── dev.mjs                  # Parallele Dev-Umgebung
 │   └── package.mjs              # Standalone Server Packaging & ZIP
@@ -156,6 +157,28 @@ const actionMsg = t("general.action_executed", { action: "Reparieren" });
 
 - **Taste:** `F5` (Im GTA-Menü unter Tastenbelegungen anpassbar)
 - **Chatbefehl:** `/template`
+
+---
+
+## 🏷️ Version Bumping (Automatisches Bumpen)
+
+Über das Skript `scripts/bump-version.mjs` kannst du die Version deines Skripts in allen relevanten Dateien (`package.json`, `web/package.json` sowie die `version '...'`-Zeile in `fxmanifest.lua`) synchronisieren:
+
+```bash
+# Patch / Bugfix (1.0.0 -> 1.0.1)
+npm run bump:patch
+
+# Minor / Neues Feature (1.0.0 -> 1.1.0)
+npm run bump:minor
+
+# Major / Breaking Change (1.0.0 -> 2.0.0)
+npm run bump:major
+
+# Oder eine gezielte Version setzen:
+npm run bump 1.2.3
+```
+
+> **Hinweis:** Die `fx_version` (z. B. `'cerulean'`) in der `fxmanifest.lua` wird dabei **nicht** verändert!
 
 ---
 
