@@ -1,6 +1,6 @@
 {
   "name": "it_tsTemplate",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Modern FiveM Resource Template in TypeScript with Vue 3, TailwindCSS & Translation System",
   "author": "it_scripts",
   "license": "MIT",

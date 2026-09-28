@@ -1,9 +1,8 @@
 fx_version 'cerulean'
 game 'gta5'
 
-author 'IT-Scripts'
-description 'Modern TypeScript & Vue 3 + TailwindCSS FiveM Template'
-version '1.0.0'
+author 'it_scripts'
+description 'Modern TypeScript & Vue 3 + TailwindCSS FiveM Template'version '1.1.0'
 
 -- NUI Page Entrypoint
 ui_page 'dist/web/index.html'
