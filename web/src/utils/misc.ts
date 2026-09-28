@@ -4,12 +4,14 @@
 export const isEnvBrowser = (): boolean => !(window as any).invokeNative;
 
 /**
- * Gibt den aktuellen FiveM Ressourcennamen zurück
+ * Gibt den aktuellen FiveM Ressourcennamen zurück.
+ * In-Game nutzt FiveM GetParentResourceName().
+ * Im Browser (Vite dev) fällt es auf 'nui-dev' zurück.
  */
 export const getResourceName = (): string => {
   return (window as any).GetParentResourceName
     ? (window as any).GetParentResourceName()
-    : "it_tsTemplate";
+    : "nui-dev";
 };
 
 /**

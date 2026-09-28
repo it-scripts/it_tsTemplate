@@ -16,7 +16,7 @@ Ein modernes, professionelles und hochperformantes FiveM-Ressourcen-Template auf
   - Typisierte NUI Callback Wrapper (`registerNuiCallback`, `fetchNui`).
   - Beispieldialoge, Formulareingaben, Server-Ping, Live-Positionsdaten und Toast-Benachrichtigungen.
 - 🛠️ **Lokaler Dev-Simulator**: Das NUI kann im Webbrowser (`npm run dev:web`) komplett ohne laufenden FiveM-Server mit Mock-Daten getestet werden.
-- 📦 **Automatisierter Server-Export**: Mit einem einzigen Befehl (`npm run package`) wird das Skript fertig kompiliert und in einen separaten, sofort einsatzbereiten Server-Ordner (`release/it_tsTemplate`) exportiert.
+- 📦 **Automatisierter Server-Export**: Mit einem einzigen Befehl (`npm run package`) wird das Skript fertig kompiliert und in einen separaten, sofort einsatzbereiten Server-Ordner (`release/<script_name>`) exportiert – der Name wird automatisch aus der `package.json` gelesen.
 - 🤖 **GitHub Actions CI/CD Release**: Automatische Erstellung von GitHub Releases inkl. ZIP-Artefakt bei jedem Merge in den `main`-Branch.
 
 ---
@@ -125,11 +125,11 @@ npm run package
 
 Dieser Befehl führt einen vollen Production-Build aus und erstellt:
 
-1. Den Ordner `release/it_tsTemplate/` (enthält nur die fertigen Produktionsdateien wie `fxmanifest.lua`, `dist/`, `locales/`).
-2. Das ZIP-Archiv `release/it_tsTemplate.zip`.
+1. Den Ordner `release/<script_name>/` (enthält nur die fertigen Produktionsdateien wie `fxmanifest.lua`, `dist/`, `locales/`).
+2. Das ZIP-Archiv `release/<script_name>.zip`.
 
 👉 **Installation auf FiveM Server:**
-Kopiere einfach den Ordner `release/it_tsTemplate` in deinen FiveM `server-data/resources/` Ordner und füge `ensure it_tsTemplate` zu deiner `server.cfg` hinzu!
+Kopiere einfach den Ordner `release/<script_name>` in deinen FiveM `server-data/resources/` Ordner und füge `ensure <script_name>` zu deiner `server.cfg` hinzu!
 
 ---
 

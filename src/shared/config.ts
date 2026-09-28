@@ -1,5 +1,6 @@
 import { IConfig } from "./types";
 import defaultConfig from "../../config.json";
+import { getResourceName } from "./resource";
 
 class ConfigManager {
   private config: IConfig = { ...defaultConfig };
@@ -29,7 +30,7 @@ class ConfigManager {
         }
       } catch (err) {
         console.warn(
-          "[it_tsTemplate] Konnte externe config.json nicht laden, nutze Standard-Werte:",
+          `[${getResourceName()}] Konnte externe config.json nicht laden, nutze Standard-Werte:`,
           err,
         );
       }

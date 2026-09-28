@@ -7,17 +7,23 @@ import { ZipArchive } from 'archiver';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
-const releaseDir = path.resolve(rootDir, 'release');
-const targetResourceDir = path.resolve(releaseDir, 'it_tsTemplate');
-const zipFilePath = path.resolve(releaseDir, 'it_tsTemplate.zip');
 
-async function createZip(sourceDir, outPath) {
+// Dynamisch Name & Version aus package.json lesen
+const pkgPath = path.resolve(rootDir, 'package.json');
+const pkg = fs.existsSync(pkgPath) ? fs.readJsonSync(pkgPath) : {};
+const resourceName = pkg.name || 'fivem-resource';
+
+const releaseDir = path.resolve(rootDir, 'release');
+const targetResourceDir = path.resolve(releaseDir, resourceName);
+const zipFilePath = path.resolve(releaseDir, `${resourceName}.zip`);
+
+async function createZip(sourceDir, outPath, folderName) {
   const archive = new ZipArchive({ zlib: { level: 9 } });
   const stream = fs.createWriteStream(outPath);
 
   return new Promise((resolve, reject) => {
     archive
-      .directory(sourceDir, 'it_tsTemplate')
+      .directory(sourceDir, folderName)
       .on('error', (err) => reject(err))
       .pipe(stream);
 
@@ -28,7 +34,7 @@ async function createZip(sourceDir, outPath) {
 
 async function runPackaging() {
   console.log('====================================================');
-  console.log('📦  Starte FiveM Resource Packaging: it_tsTemplate');
+  console.log(`📦  Starte FiveM Resource Packaging: ${resourceName}`);
   console.log('====================================================');
 
   try {
@@ -67,13 +73,13 @@ async function runPackaging() {
 
     // 4. ZIP Archiv für den Download / CI Release erstellen
     console.log('[4/4] 🗜️  Erstelle ZIP-Archiv für den Server-Deploy...');
-    await createZip(targetResourceDir, zipFilePath);
+    await createZip(targetResourceDir, zipFilePath, resourceName);
 
     console.log('\n====================================================');
     console.log('✅ Packaging erfolgreich abgeschlossen!');
-    console.log(`📁 Fertiger Server-Ordner: release/it_tsTemplate`);
-    console.log(`📦 Fertiges ZIP-Archiv:     release/it_tsTemplate.zip`);
-    console.log('👉 Du kannst den Ordner "release/it_tsTemplate" direkt');
+    console.log(`📁 Fertiger Server-Ordner: release/${resourceName}`);
+    console.log(`📦 Fertiges ZIP-Archiv:     release/${resourceName}.zip`);
+    console.log(`👉 Du kannst den Ordner "release/${resourceName}" direkt`);
     console.log('   in den "resources"-Ordner deines FiveM-Servers ziehen!');
     console.log('====================================================\n');
   } catch (error) {

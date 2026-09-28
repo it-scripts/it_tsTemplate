@@ -39,9 +39,11 @@ jobs:
         run: |
           npm run package
 
-      - name: 🏷️ Determine Release Tag
+      - name: 🏷️ Determine Release Tag & Resource Name
         id: vars
         run: |
+          PKG_NAME=$(node -p "require('./package.json').name")
+          echo "pkg_name=$PKG_NAME" >> $GITHUB_OUTPUT
           if [ -n "${{ github.event.inputs.version }}" ]; then
             TAG_NAME="${{ github.event.inputs.version }}"
           else
@@ -51,6 +53,7 @@ jobs:
           fi
           echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
           echo "Release Tag: $TAG_NAME"
+          echo "Resource Name: $PKG_NAME"
 
       - name: 🚀 Create GitHub Release & Upload Asset
         uses: softprops/action-gh-release@v2
@@ -66,11 +69,11 @@ jobs:
             - Modulares Übersetzungssystem (`locales/`)
 
             ### 📦 Installation
-            1. Lade die unten angehängte Datei `it_tsTemplate.zip` herunter.
-            2. Entpacke den Ordner `it_tsTemplate` in den `resources`-Ordner deines FiveM-Servers.
-            3. Füge `ensure it_tsTemplate` zu deiner `server.cfg` hinzu.
+            1. Lade die unten angehängte Datei `${{ steps.vars.outputs.pkg_name }}.zip` herunter.
+            2. Entpacke den Ordner `${{ steps.vars.outputs.pkg_name }}` in den `resources`-Ordner deines FiveM-Servers.
+            3. Füge `ensure ${{ steps.vars.outputs.pkg_name }}` zu deiner `server.cfg` hinzu.
           files: |
-            release/it_tsTemplate.zip
+            release/${{ steps.vars.outputs.pkg_name }}.zip
           draft: false
           prerelease: false
         env:

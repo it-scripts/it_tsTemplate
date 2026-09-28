@@ -1,6 +1,7 @@
 import { ClientExampleController } from "./controllers/exampleController";
 import { Config } from "../shared/config";
 import { Locales, t } from "../shared/locale";
+import { getResourceName } from "../shared/resource";
 
 class ClientApp {
   private exampleController: ClientExampleController;
@@ -10,7 +11,7 @@ class ClientApp {
     this.registerCommandsAndBinds();
 
     if (Config.debug) {
-      console.log("[it_tsTemplate] Client bereit.");
+      console.log(`[${getResourceName()}] Client bereit.`);
     }
   }
 

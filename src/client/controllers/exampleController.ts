@@ -8,6 +8,7 @@ import {
 } from "../../shared/types";
 import { Locales, t } from "../../shared/locale";
 import { Config } from "../../shared/config";
+import { getResourceEvent, getResourceName } from "../../shared/resource";
 
 export class ClientExampleController {
   private isUiOpen: boolean = false;
@@ -51,7 +52,7 @@ export class ClientExampleController {
 
       if (Config.debug) {
         console.log(
-          "[it_tsTemplate] NUI geöffnet mit PlayerData:",
+          `[${getResourceName()}] NUI geöffnet mit PlayerData:`,
           JSON.stringify(playerData),
         );
       }
@@ -70,7 +71,7 @@ export class ClientExampleController {
     // Server-Daten anfragen
     registerNuiCallback("getServerData", async (_data, cb) => {
       this.pendingServerDataCallback = cb;
-      emitNet("it_tsTemplate:server:fetchServerData");
+      emitNet(getResourceEvent("server:fetchServerData"));
 
       // Timeout Fallback nach 5 Sekunden
       setTimeout(() => {
@@ -89,7 +90,7 @@ export class ClientExampleController {
       "triggerAction",
       (payload, cb) => {
         this.pendingActionCallback = cb;
-        emitNet("it_tsTemplate:server:triggerCustomAction", payload);
+        emitNet(getResourceEvent("server:triggerCustomAction"), payload);
 
         setTimeout(() => {
           if (this.pendingActionCallback) {
@@ -123,7 +124,7 @@ export class ClientExampleController {
   private registerNetEvents(): void {
     // Antwort von Server: Serverstatistiken
     onNet(
-      "it_tsTemplate:client:receiveServerData",
+      getResourceEvent("client:receiveServerData"),
       (response: IApiResponse<IServerStats>) => {
         if (this.pendingServerDataCallback) {
           this.pendingServerDataCallback(response);
@@ -138,12 +139,15 @@ export class ClientExampleController {
     );
 
     // Antwort von Server: Benutzerdefinierte Aktion
-    onNet("it_tsTemplate:client:actionResponse", (response: IApiResponse) => {
-      if (this.pendingActionCallback) {
-        this.pendingActionCallback(response);
-        this.pendingActionCallback = null;
-      }
-    });
+    onNet(
+      getResourceEvent("client:actionResponse"),
+      (response: IApiResponse) => {
+        if (this.pendingActionCallback) {
+          this.pendingActionCallback(response);
+          this.pendingActionCallback = null;
+        }
+      },
+    );
   }
 
   private getLocalPlayerData(): IPlayerData {

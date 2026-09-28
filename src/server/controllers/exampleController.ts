@@ -5,6 +5,7 @@ import {
 } from "../../shared/types";
 import { Locales, t } from "../../shared/locale";
 import { Config } from "../../shared/config";
+import { getResourceEvent, getResourceName } from "../../shared/resource";
 
 export class ServerExampleController {
   private startTime: number = Date.now();
@@ -12,17 +13,19 @@ export class ServerExampleController {
   constructor() {
     this.registerEvents();
     if (Config.debug) {
-      console.log("[it_tsTemplate] ServerExampleController initialized.");
+      console.log(
+        `[${getResourceName()}] ServerExampleController initialized.`,
+      );
     }
   }
 
   private registerEvents(): void {
     // Event: Client fragt Server-Statistiken ab
-    onNet("it_tsTemplate:server:fetchServerData", () => {
+    onNet(getResourceEvent("server:fetchServerData"), () => {
       const src = source;
       const stats = this.getServerStats();
 
-      emitNet("it_tsTemplate:client:receiveServerData", src, {
+      emitNet(getResourceEvent("client:receiveServerData"), src, {
         success: true,
         data: stats,
       } as IApiResponse<IServerStats>);
@@ -30,20 +33,20 @@ export class ServerExampleController {
 
     // Event: Client löst eine benutzerdefinierte Aktion aus
     onNet(
-      "it_tsTemplate:server:triggerCustomAction",
+      getResourceEvent("server:triggerCustomAction"),
       (payload: ICustomActionPayload) => {
         const src = source;
         const playerName = GetPlayerName(src.toString()) || `Player_${src}`;
 
         console.log(
-          `[it_tsTemplate] Aktion von ${playerName} (${src}) empfangen: "${payload.message}"`,
+          `[${getResourceName()}] Aktion von ${playerName} (${src}) empfangen: "${payload.message}"`,
         );
 
         // Antwort zurück an Client senden
         const responseText = t("general.action_executed", {
           action: payload.message,
         });
-        emitNet("it_tsTemplate:client:actionResponse", src, {
+        emitNet(getResourceEvent("client:actionResponse"), src, {
           success: true,
           data: {
             receivedMessage: payload.message,
