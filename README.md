@@ -17,7 +17,7 @@ Ein modernes, professionelles und hochperformantes FiveM-Ressourcen-Template auf
   - Beispieldialoge, Formulareingaben, Server-Ping, Live-Positionsdaten und Toast-Benachrichtigungen.
 - 🛠️ **Lokaler Dev-Simulator**: Das NUI kann im Webbrowser (`npm run dev:web`) komplett ohne laufenden FiveM-Server mit Mock-Daten getestet werden.
 - 📦 **Automatisierter Server-Export**: Mit einem einzigen Befehl (`npm run package`) wird das Skript fertig kompiliert und in einen separaten, sofort einsatzbereiten Server-Ordner (`release/<script_name>`) exportiert – der Name wird automatisch aus der `package.json` gelesen.
-- 🤖 **GitHub Actions CI/CD Release**: Automatische Erstellung von GitHub Releases inkl. ZIP-Artefakt bei jedem Merge in den `main`-Branch.
+- 🤖 **GitHub Actions CI/CD Release**: Automatische Erstellung von GitHub Releases inklusive ZIP-Artefakt und **automatisch generierten Release-Notes basierend auf Conventional Commits** (`feat:`, `fix:`, `chore:`, etc.).
 
 ---
 
@@ -34,6 +34,7 @@ it_tsTemplate/
 │   └── en.json
 ├── scripts/
 │   ├── build.mjs                # TypeScript Build mit esbuild
+│   ├── changelog.mjs            # Automatische Changelog-Generierung (Conventional Commits)
 │   ├── dev.mjs                  # Parallele Dev-Umgebung
 │   └── package.mjs              # Standalone Server Packaging & ZIP
 ├── src/

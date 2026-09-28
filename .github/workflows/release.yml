@@ -55,23 +55,19 @@ jobs:
           echo "Release Tag: $TAG_NAME"
           echo "Resource Name: $PKG_NAME"
 
+      - name: � Generate Conventional Changelog
+        run: |
+          node scripts/changelog.mjs release_notes.md
+        env:
+          PKG_NAME: ${{ steps.vars.outputs.pkg_name }}
+          TAG_NAME: ${{ steps.vars.outputs.tag }}
+
       - name: 🚀 Create GitHub Release & Upload Asset
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.vars.outputs.tag }}
           name: "Release ${{ steps.vars.outputs.tag }}"
-          body: |
-            ## 🚀 Automated Release ${{ steps.vars.outputs.tag }}
-
-            ### ✨ Enthaltene Features
-            - Vollständig kompiliertes FiveM TypeScript Client & Server Script (`dist/`)
-            - Produktionsfertiges Vue 3 + TailwindCSS NUI Dashboard (`dist/web/`)
-            - Modulares Übersetzungssystem (`locales/`)
-
-            ### 📦 Installation
-            1. Lade die unten angehängte Datei `${{ steps.vars.outputs.pkg_name }}.zip` herunter.
-            2. Entpacke den Ordner `${{ steps.vars.outputs.pkg_name }}` in den `resources`-Ordner deines FiveM-Servers.
-            3. Füge `ensure ${{ steps.vars.outputs.pkg_name }}` zu deiner `server.cfg` hinzu.
+          body_path: release_notes.md
           files: |
             release/${{ steps.vars.outputs.pkg_name }}.zip
           draft: false
