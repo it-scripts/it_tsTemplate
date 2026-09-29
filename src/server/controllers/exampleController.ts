@@ -3,15 +3,16 @@ import {
   ICustomActionPayload,
   IServerStats,
 } from "../../shared/types";
-import { Locales, t } from "../../shared/locale";
+import { registerServerCallback } from "../callbacks";
+import { t } from "../../shared/locale";
 import { Config } from "../../shared/config";
-import { getResourceEvent, getResourceName } from "../../shared/resource";
+import { getResourceName } from "../../shared/resource";
 
 export class ServerExampleController {
   private startTime: number = Date.now();
 
   constructor() {
-    this.registerEvents();
+    this.registerServerCallbacks();
     if (Config.debug) {
       console.log(
         `[${getResourceName()}] ServerExampleController initialized.`,
@@ -19,41 +20,44 @@ export class ServerExampleController {
     }
   }
 
-  private registerEvents(): void {
-    // Event: Client fragt Server-Statistiken ab
-    onNet(getResourceEvent("server:fetchServerData"), () => {
-      const src = source;
-      const stats = this.getServerStats();
+  private registerServerCallbacks(): void {
+    // Server-Callback: Server-Statistiken abfragen
+    registerServerCallback<void, IApiResponse<IServerStats>>(
+      "fetchServerData",
+      () => {
+        const stats = this.getServerStats();
+        return {
+          success: true,
+          data: stats,
+        };
+      },
+    );
 
-      emitNet(getResourceEvent("client:receiveServerData"), src, {
-        success: true,
-        data: stats,
-      } as IApiResponse<IServerStats>);
-    });
-
-    // Event: Client löst eine benutzerdefinierte Aktion aus
-    onNet(
-      getResourceEvent("server:triggerCustomAction"),
-      (payload: ICustomActionPayload) => {
-        const src = source;
+    // Server-Callback: Benutzerdefinierte Aktion ausführen
+    registerServerCallback<ICustomActionPayload, IApiResponse>(
+      "triggerCustomAction",
+      (src, payload) => {
         const playerName = GetPlayerName(src.toString()) || `Player_${src}`;
 
-        console.log(
-          `[${getResourceName()}] Aktion von ${playerName} (${src}) empfangen: "${payload.message}"`,
-        );
+        if (Config.debug) {
+          console.log(
+            `[${getResourceName()}] Aktion von ${playerName} (${src}) empfangen: "${payload.message}"`,
+          );
+        }
 
         // Antwort zurück an Client senden
         const responseText = t("general.action_executed", {
           action: payload.message,
         });
-        emitNet(getResourceEvent("client:actionResponse"), src, {
+
+        return {
           success: true,
           data: {
             receivedMessage: payload.message,
             timestamp: new Date().toISOString(),
             responseMsg: responseText,
           },
-        } as IApiResponse);
+        };
       },
     );
   }

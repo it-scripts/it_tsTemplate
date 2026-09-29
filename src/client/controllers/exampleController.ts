@@ -1,4 +1,5 @@
 import { registerNuiCallback, sendNuiMessage } from "../nui";
+import { triggerServerCallback } from "../callbacks";
 import {
   IApiResponse,
   ICustomActionPayload,
@@ -6,16 +7,12 @@ import {
   IPlayerData,
   IServerStats,
 } from "../../shared/types";
-import { Locales, t } from "../../shared/locale";
+import { Locales } from "../../shared/locale";
 import { Config } from "../../shared/config";
-import { getResourceEvent, getResourceName } from "../../shared/resource";
+import { getResourceName } from "../../shared/resource";
 
 export class ClientExampleController {
   private isUiOpen: boolean = false;
-  private pendingServerDataCallback:
-    | ((data: IApiResponse<IServerStats>) => void)
-    | null = null;
-  private pendingActionCallback: ((data: IApiResponse) => void) | null = null;
 
   constructor() {
     this.registerNuiCallbacks();
@@ -70,37 +67,28 @@ export class ClientExampleController {
 
     // Server-Daten anfragen
     registerNuiCallback("getServerData", async (_data, cb) => {
-      this.pendingServerDataCallback = cb;
-      emitNet(getResourceEvent("server:fetchServerData"));
+      const response =
+        await triggerServerCallback<IApiResponse<IServerStats>>(
+          "fetchServerData",
+        );
 
-      // Timeout Fallback nach 5 Sekunden
-      setTimeout(() => {
-        if (this.pendingServerDataCallback) {
-          this.pendingServerDataCallback({
-            success: false,
-            error: "Server timeout",
-          });
-          this.pendingServerDataCallback = null;
-        }
-      }, 5000);
+      // Event auch direkt an NUI pushen
+      if (response.success && response.data) {
+        sendNuiMessage("updateServerStats", response.data);
+      }
+
+      cb(response);
     });
 
     // Benutzerdefinierte Aktion an Server senden
     registerNuiCallback<ICustomActionPayload>(
       "triggerAction",
-      (payload, cb) => {
-        this.pendingActionCallback = cb;
-        emitNet(getResourceEvent("server:triggerCustomAction"), payload);
-
-        setTimeout(() => {
-          if (this.pendingActionCallback) {
-            this.pendingActionCallback({
-              success: false,
-              error: "Server timeout",
-            });
-            this.pendingActionCallback = null;
-          }
-        }, 5000);
+      async (payload, cb) => {
+        const response = await triggerServerCallback<IApiResponse>(
+          "triggerCustomAction",
+          payload,
+        );
+        cb(response);
       },
     );
 
@@ -122,32 +110,7 @@ export class ClientExampleController {
   }
 
   private registerNetEvents(): void {
-    // Antwort von Server: Serverstatistiken
-    onNet(
-      getResourceEvent("client:receiveServerData"),
-      (response: IApiResponse<IServerStats>) => {
-        if (this.pendingServerDataCallback) {
-          this.pendingServerDataCallback(response);
-          this.pendingServerDataCallback = null;
-        }
-
-        // Event auch direkt an NUI pushen
-        if (response.success && response.data) {
-          sendNuiMessage("updateServerStats", response.data);
-        }
-      },
-    );
-
-    // Antwort von Server: Benutzerdefinierte Aktion
-    onNet(
-      getResourceEvent("client:actionResponse"),
-      (response: IApiResponse) => {
-        if (this.pendingActionCallback) {
-          this.pendingActionCallback(response);
-          this.pendingActionCallback = null;
-        }
-      },
-    );
+    // Hier können clientseitige Net-Events registriert werden
   }
 
   private getLocalPlayerData(): IPlayerData {
