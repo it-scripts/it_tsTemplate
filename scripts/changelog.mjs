@@ -16,10 +16,9 @@ const tagName = process.env.TAG_NAME || `v${pkg.version || '1.0.0'}`;
 function getGitCommits() {
   let prevTag = '';
   try {
-    // Suche das vorherige Git-Tag vor HEAD
     prevTag = execSync('git describe --tags --abbrev=0 HEAD^', { cwd: rootDir, encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
   } catch {
-    // Kein vorheriges Tag gefunden
+    // No previous tag found
   }
 
   const range = prevTag ? `${prevTag}..HEAD` : '';
@@ -43,16 +42,16 @@ function generateChangelog() {
   const commits = getGitCommits();
 
   const categories = {
-    feat: { title: '✨ Neue Features', items: [] },
-    fix: { title: '🐛 Fehlerbehebungen', items: [] },
-    perf: { title: '⚡ Performance-Optimierungen', items: [] },
-    refactor: { title: '♻️ Refactoring', items: [] },
-    docs: { title: '📝 Dokumentation', items: [] },
-    style: { title: '🎨 Code-Style & Formatierung', items: [] },
-    test: { title: '🧪 Tests', items: [] },
-    chore: { title: '🔧 Wartung & Chores', items: [] },
-    ci: { title: '⚙️ CI/CD Pipeline', items: [] },
-    other: { title: '🔄 Sonstige Änderungen', items: [] },
+    feat: { title: 'Features', items: [] },
+    fix: { title: 'Bug Fixes', items: [] },
+    perf: { title: 'Performance Improvements', items: [] },
+    refactor: { title: 'Code Refactoring', items: [] },
+    docs: { title: 'Documentation', items: [] },
+    style: { title: 'Styles & Formatting', items: [] },
+    test: { title: 'Tests', items: [] },
+    chore: { title: 'Maintenance & Chores', items: [] },
+    ci: { title: 'Continuous Integration', items: [] },
+    other: { title: 'Other Changes', items: [] },
   };
 
   // Conventional Commit Regex: type(scope)!: subject
@@ -90,19 +89,19 @@ function generateChangelog() {
   }
 
   if (!hasCategorizedChanges) {
-    changelogBody = '_Keine detaillierten Commit-Meldungen vorhanden._\n\n';
+    changelogBody = '_No detailed commit messages recorded._\n\n';
   }
 
-  const fullReleaseNotes = `## 🚀 Release ${tagName}
+  const fullReleaseNotes = `## Release ${tagName}
 
 ${changelogBody.trim()}
 
 ---
 
-### 📦 Installation
-1. Lade die unten angehängte Datei \`${resourceName}.zip\` herunter.
-2. Entpacke den Ordner \`${resourceName}\` in den \`resources\`-Ordner deines FiveM-Servers.
-3. Füge \`ensure ${resourceName}\` zu deiner \`server.cfg\` hinzu.
+### Deployment Instructions
+1. Download the attached asset \`${resourceName}.zip\`.
+2. Extract the \`${resourceName}\` directory into your server's \`resources\` folder.
+3. Add \`ensure ${resourceName}\` to your \`server.cfg\`.
 `;
 
   return fullReleaseNotes;
@@ -110,12 +109,12 @@ ${changelogBody.trim()}
 
 const changelog = generateChangelog();
 
-// Wenn als Argument ein Dateipfad übergeben wurde, schreibe in die Datei, sonst nach stdout
+
 const outputFileArg = process.argv[2];
 if (outputFileArg) {
   const outputPath = path.resolve(rootDir, outputFileArg);
   fs.writeFileSync(outputPath, changelog, 'utf8');
-  console.log(`📝 Release Notes erfolgreich in "${outputFileArg}" geschrieben.`);
+  console.log(`Release notes written to "${outputFileArg}".`);
 } else {
   console.log(changelog);
 }
