@@ -16,7 +16,7 @@ class ClientApp {
   }
 
   private registerCommandsAndBinds(): void {
-    // Chat Command registrieren
+    // Chat Command registrieren für NUI UI Toggle
     RegisterCommand(
       Config.ui.command,
       () => {
@@ -25,7 +25,16 @@ class ClientApp {
       false,
     );
 
-    // Keymapping (Taste im GTA Tastenbelegungsmenü editierbar)
+    // Register a chat command for a direct server callback test (WITHOUT NUI)
+    RegisterCommand(
+      "testcallback",
+      () => {
+        this.exampleController.exampleDirectServerCallback();
+      },
+      false,
+    );
+
+    // Key mapping (key can be edited in the GTA key mapping menu)
     RegisterKeyMapping(
       Config.ui.command,
       Config.ui.description,

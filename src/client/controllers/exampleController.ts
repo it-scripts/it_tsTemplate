@@ -27,7 +27,7 @@ export class ClientExampleController {
   public setUiVisibility(visible: boolean): void {
     this.isUiOpen = visible;
 
-    // NUI Focus ein- oder ausschalten
+    // Set NUI Focus - on or off
     SetNuiFocus(visible, visible);
 
     if (visible) {
@@ -60,20 +60,24 @@ export class ClientExampleController {
   }
 
   private registerNuiCallbacks(): void {
-    // UI Schließen
+    // =========================================================================
+    // EXAMPLE WITH NUI: NUI sends a request -> the client triggers a server callback -> response to NUI
+    // =========================================================================
+
+    // close NUI
     registerNuiCallback("hideUI", (_data, cb) => {
       this.setUiVisibility(false);
       cb({ success: true });
     });
 
-    // Server-Daten anfragen
+    // Request Server Data (NUI -> Client -> Server Callback -> Client -> NUI)
     registerNuiCallback("getServerData", async (_data, cb) => {
       const response =
         await triggerServerCallback<IApiResponse<IServerStats>>(
           "fetchServerData",
         );
 
-      // Event auch direkt an NUI pushen
+      // Push the event directly to NUI
       if (response.success && response.data) {
         sendNuiMessage("updateServerStats", response.data);
       }
@@ -81,7 +85,7 @@ export class ClientExampleController {
       cb(response);
     });
 
-    // Benutzerdefinierte Aktion an Server senden
+    // Send a custom action to the server (NUI -> Client -> Server Callback -> Client -> NUI)
     registerNuiCallback<ICustomActionPayload>(
       "triggerAction",
       async (payload, cb) => {
@@ -93,7 +97,7 @@ export class ClientExampleController {
       },
     );
 
-    // Sprache ändern
+    // Change language
     registerNuiCallback<{ locale: string }>("setLocale", (data, cb) => {
       if (data && data.locale) {
         Locales.setLocale(data.locale);
@@ -108,6 +112,36 @@ export class ClientExampleController {
         cb({ success: false, error: "Keine Sprache angegeben" });
       }
     });
+  }
+
+  /**
+   * =========================================================================
+   * EXAMPLE WITHOUT NUI: Directly triggering a server callback from the client code
+   * (e.g., called via a command, an in-game event, a keybinding, or the game loop/tick)
+   * =========================================================================
+   */
+  public async exampleDirectServerCallback(): Promise<void> {
+    if (Config.debug) {
+      console.log(
+        `[${getResourceName()}] Sende direkten Server-Callback (ohne NUI)...`,
+      );
+    }
+
+    const response =
+      await triggerServerCallback<IApiResponse<IServerStats>>(
+        "fetchServerData",
+      );
+
+    if (response.success && response.data) {
+      console.log(
+        `[${getResourceName()}] Direkter Callback erfolgreich! Serverzeit: ${response.data.serverTime}, Spieler: ${response.data.onlinePlayers}/${response.data.maxPlayers}`,
+      );
+    } else {
+      console.error(
+        `[${getResourceName()}] Direkter Callback fehlgeschlagen:`,
+        response.error,
+      );
+    }
   }
 
   private registerNetEvents(): void {
