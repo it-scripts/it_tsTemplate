@@ -21,18 +21,13 @@
                         </p>
                     </div>
 
-                    <div class="flex items-center gap-2 bg-slate-950/80 p-1.5 rounded-xl border border-slate-800">
-                        <button @click="store.switchLanguage('de')"
+                    <div class="flex items-center gap-2 bg-slate-950/80 p-1.5 rounded-xl border border-slate-800 flex-wrap">
+                        <button v-for="lang in i18n.availableLocales.value" :key="lang"
+                            @click="store.switchLanguage(lang)"
                             class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5"
-                            :class="i18n.currentLocale.value === 'de' ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30' : 'text-slate-400 hover:text-slate-200'">
-                            <span>🇩🇪</span>
-                            <span>Deutsch</span>
-                        </button>
-                        <button @click="store.switchLanguage('en')"
-                            class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5"
-                            :class="i18n.currentLocale.value === 'en' ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30' : 'text-slate-400 hover:text-slate-200'">
-                            <span>🇬🇧</span>
-                            <span>English</span>
+                            :class="i18n.currentLocale.value === lang ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30' : 'text-slate-400 hover:text-slate-200'">
+                            <span>{{ getLangFlag(lang) }}</span>
+                            <span>{{ getLangName(lang) }}</span>
                         </button>
                     </div>
                 </div>
@@ -91,4 +86,34 @@ const { t } = i18n;
 
 const soundEnabled = ref(true);
 const debugEnabled = ref(false);
+
+const getLangFlag = (lang: string) => {
+    const flags: Record<string, string> = {
+        de: '🇩🇪',
+        en: '🇬🇧',
+        fr: '🇫🇷',
+        es: '🇪🇸',
+        it: '🇮🇹',
+        nl: '🇳🇱',
+        pl: '🇵🇱',
+        pt: '🇵🇹',
+        tr: '🇹🇷',
+    };
+    return flags[lang.toLowerCase()] || '🌐';
+};
+
+const getLangName = (lang: string) => {
+    const names: Record<string, string> = {
+        de: 'Deutsch',
+        en: 'English',
+        fr: 'Français',
+        es: 'Español',
+        it: 'Italiano',
+        nl: 'Nederlands',
+        pl: 'Polski',
+        pt: 'Português',
+        tr: 'Türkçe',
+    };
+    return names[lang.toLowerCase()] || lang.toUpperCase();
+};
 </script>

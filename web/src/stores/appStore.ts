@@ -84,14 +84,19 @@ export const useAppStore = defineStore("app", () => {
     visible?: boolean;
     locale?: string;
     translations?: Record<string, any>;
+    locales?: Record<string, Record<string, any>>;
     player?: IPlayerData;
     server?: IServerStats;
   }) => {
     if (data.visible !== undefined) isVisible.value = data.visible;
-    if (data.locale) setLocale(data.locale);
-    if (data.locale && data.translations) {
+    if (data.locales) {
+      Object.entries(data.locales).forEach(([lang, dict]) => {
+        addTranslations(lang, dict);
+      });
+    } else if (data.locale && data.translations) {
       addTranslations(data.locale, data.translations);
     }
+    if (data.locale) setLocale(data.locale);
     if (data.player) player.value = data.player;
     if (data.server) server.value = data.server;
   };

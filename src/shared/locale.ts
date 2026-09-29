@@ -22,9 +22,35 @@ class LocaleManager {
       typeof LoadResourceFile === "function"
     ) {
       const resourceName = GetCurrentResourceName();
-      const availableLangs = ["de", "en"];
+      const foundLangs = new Set<string>();
 
-      for (const lang of availableLangs) {
+      // Scanne Metadaten nach allen Dateien im locales/-Ordner
+      if (
+        typeof GetNumResourceMetadata === "function" &&
+        typeof GetResourceMetadata === "function"
+      ) {
+        for (const metaKey of ["file", "files"]) {
+          const numFiles = GetNumResourceMetadata(resourceName, metaKey);
+          for (let i = 0; i < numFiles; i++) {
+            const filePath = GetResourceMetadata(resourceName, metaKey, i);
+            if (filePath) {
+              const match = filePath.match(
+                /^locales[/\\]([a-zA-Z0-9_-]+)\.json$/i,
+              );
+              if (match && match[1]) {
+                foundLangs.add(match[1]);
+              }
+            }
+          }
+        }
+      }
+
+      // Fallback: Falls keine Metadaten gefunden wurden, verwende die vordefinierten Sprachen
+      if (foundLangs.size === 0) {
+        Object.keys(this.locales).forEach((lang) => foundLangs.add(lang));
+      }
+
+      for (const lang of foundLangs) {
         try {
           const fileContent = LoadResourceFile(
             resourceName,
@@ -63,6 +89,10 @@ class LocaleManager {
     return Object.keys(this.locales);
   }
 
+  public getAllLocalesData(): Record<string, Record<string, any>> {
+    return this.locales;
+  }
+
   public addLocale(
     localeName: string,
     translations: Record<string, any>,
@@ -94,22 +124,24 @@ class LocaleManager {
       return `[MISSING: ${key}]`;
     }
 
+    let formattedText = text;
+
     if (params) {
       if (Array.isArray(params)) {
-        params.forEach((param) => {
-          text = text.replace(/%s/, String(param));
-        });
+        for (const param of params) {
+          formattedText = formattedText.replace(/%s/, String(param));
+        }
       } else {
-        Object.entries(params).forEach(([paramKey, paramValue]) => {
-          text = text.replace(
+        for (const [paramKey, paramValue] of Object.entries(params)) {
+          formattedText = formattedText.replace(
             new RegExp(`%\\{${paramKey}\\}|\\{${paramKey}\\}`, "g"),
             String(paramValue),
           );
-        });
+        }
       }
     }
 
-    return text;
+    return formattedText;
   }
 
   private getNestedTranslation(

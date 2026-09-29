@@ -20,14 +20,12 @@
 
         <div class="h-4 w-px bg-slate-700"></div>
 
-        <div class="flex gap-1">
-            <button @click="store.switchLanguage('de')" class="px-2 py-0.5 rounded text-[11px]"
-                :class="i18n.currentLocale.value === 'de' ? 'bg-brand-600 text-white font-bold' : 'bg-slate-800 text-slate-400'">
-                DE
-            </button>
-            <button @click="store.switchLanguage('en')" class="px-2 py-0.5 rounded text-[11px]"
-                :class="i18n.currentLocale.value === 'en' ? 'bg-brand-600 text-white font-bold' : 'bg-slate-800 text-slate-400'">
-                EN
+        <div class="flex gap-1 flex-wrap">
+            <button v-for="lang in i18n.availableLocales.value" :key="lang"
+                @click="store.switchLanguage(lang)"
+                class="px-2 py-0.5 rounded text-[11px] uppercase"
+                :class="i18n.currentLocale.value === lang ? 'bg-brand-600 text-white font-bold' : 'bg-slate-800 text-slate-400'">
+                {{ lang }}
             </button>
         </div>
     </div>

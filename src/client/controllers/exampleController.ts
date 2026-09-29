@@ -36,6 +36,7 @@ export class ClientExampleController {
         visible: true,
         locale: Locales.getLocale(),
         translations: Locales.getTranslations(),
+        locales: Locales.getAllLocalesData(),
         player: playerData,
         server: {
           serverTime: new Date().toLocaleTimeString("de-DE"),

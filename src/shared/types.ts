@@ -30,6 +30,7 @@ export interface INuiInitData {
   visible: boolean;
   locale: string;
   translations: Record<string, any>;
+  locales?: Record<string, Record<string, any>>;
   player: IPlayerData;
   server: IServerStats;
 }
