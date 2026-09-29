@@ -1,107 +1,141 @@
-# 🚀 IT FiveM TypeScript & Vue 3 Template (`it_tsTemplate`)
+# FiveM TypeScript & Vue 3 Resource Template (`it_tsTemplate`)
 
-Ein modernes, professionelles und hochperformantes FiveM-Ressourcen-Template auf Basis von **TypeScript**, **Vue 3 (Composition API)**, **TailwindCSS**, **Vite** und einem flexiblen **Translation / i18n System**.
-
----
-
-## ✨ Features
-
-- ⚡ **100% TypeScript**: Vollständig typisierte Client- und Server-Scripts sowie NUI Frontend.
-- 🎨 **Modernes NUI (Vue 3 + TailwindCSS + Lucide Icons)**: Ultra-schnelle Ladezeiten via Vite, Dark Mode & Glassmorphism Design.
-- 🌐 **Modulares Übersetzungssystem (i18n)**:
-  - Zentrale JSON-Sprachdateien in `locales/` (`de.json`, `en.json`, usw.).
-  - Unterstützt Parameter-Interpolation (`%{variable}` oder `%s`).
-  - Dynamischer Sprachwechsel zur Laufzeit inklusive Synchronisation zwischen NUI und FiveM Backend.
-- 🔄 **NUI <-> Client <-> Server Interaktions-Pipeline**:
-  - Typisierte NUI Callback Wrapper (`registerNuiCallback`, `fetchNui`).
-  - Beispieldialoge, Formulareingaben, Server-Ping, Live-Positionsdaten und Toast-Benachrichtigungen.
-- 🛠️ **Lokaler Dev-Simulator**: Das NUI kann im Webbrowser (`npm run dev:web`) komplett ohne laufenden FiveM-Server mit Mock-Daten getestet werden.
-- 📦 **Automatisierter Server-Export**: Mit einem einzigen Befehl (`npm run package`) wird das Skript fertig kompiliert und in einen separaten, sofort einsatzbereiten Server-Ordner (`release/<script_name>`) exportiert – der Name wird automatisch aus der `package.json` gelesen.
-- 🤖 **GitHub Actions CI/CD Release**: Automatische Erstellung von GitHub Releases inklusive ZIP-Artefakt und **automatisch generierten Release-Notes basierend auf Conventional Commits** (`feat:`, `fix:`, `chore:`, etc.).
+A production-grade boilerplate for developing FiveM resources using modern web tooling and TypeScript. It features a fully typed pipeline across Client, Server, and NUI, utilizing Vue 3 (Composition API), Vite, Tailwind CSS, Pinia, and an extensible i18n runtime.
 
 ---
 
-## 📁 Ordnerstruktur
+## Architecture & Features
+
+- **End-to-End TypeScript**: Strict type definitions shared across FiveM Client, Server, and NUI frontend code.
+- **Modern NUI Stack**: Vue 3 with Composition API, Vite for hot module replacement (HMR), Tailwind CSS, and Lucide icons.
+- **Runtime i18n Subsystem**:
+  - Unified JSON definitions in `locales/` (`en.json`, `de.json`, etc.).
+  - Interpolation support via `%{variable}` or `%s`.
+  - Dynamic runtime locale changes synchronized across the NUI and FiveM client runtime.
+- **NUI Communication Pipeline**:
+  - Wrapped helper utilities (`fetchNui`, `registerNuiCallback`) handling data serialization and event lifecycles.
+  - Browser mock environment for standalone UI development (`npm run dev:web`) without an active FXServer instance.
+- **Build & Packaging Workflow**:
+  - esbuild bundling for Client and Server scripts.
+  - Automatic packaging into production-ready standalone directories (`release/<resource_name>`) and deployable `.zip` archives.
+  - Multi-file version management keeping root `package.json`, `web/package.json`, and `fxmanifest.lua` in sync.
+- **CI/CD Integration**: Pre-configured GitHub Actions workflow generating release assets and changelogs derived from Conventional Commits.
+
+---
+
+## Directory Structure
 
 ```text
 it_tsTemplate/
 ├── .github/
 │   └── workflows/
-│       └── release.yml          # GitHub Actions CI/CD Pipeline
-├── config.json                  # Externe Konfiguration (ohne Recompile anpassbar)
-├── locales/                     # Sprachdateien
+│       └── release.yml          # Automated CI/CD release workflow
+├── config.json                  # External runtime configuration
+├── locales/                     # Localization data files
 │   ├── de.json
 │   └── en.json
 ├── scripts/
-│   ├── build.mjs                # TypeScript Build mit esbuild
-│   ├── bump-version.mjs         # Automatischer Version-Bump (patch, minor, major)
-│   ├── changelog.mjs            # Automatische Changelog-Generierung (Conventional Commits)
-│   ├── dev.mjs                  # Parallele Dev-Umgebung
-│   └── package.mjs              # Standalone Server Packaging & ZIP
+│   ├── build.mjs                # Script bundler using esbuild
+│   ├── bump-version.mjs         # SemVer synchronization utility
+│   ├── changelog.mjs            # Conventional commit parser
+│   ├── dev.mjs                  # Concurrent dev execution environment
+│   └── package.mjs              # Production packaging & asset archiver
 ├── src/
-│   ├── client/                  # FiveM Client Scripts
-│   │   ├── client.ts            # Entrypoint, Commands & Keybinds
-│   │   ├── nui.ts               # NUI Event & Callback Helpers
+│   ├── client/                  # FiveM Client runtime code
+│   │   ├── client.ts            # Resource client entrypoint
+│   │   ├── nui.ts               # NUI callback and event helpers
 │   │   └── controllers/
-│   │       └── exampleController.ts
-│   ├── server/                  # FiveM Server Scripts
-│   │   ├── server.ts            # Entrypoint & Logging
+│   ├── server/                  # FiveM Server runtime code
+│   │   ├── server.ts            # Resource server entrypoint
 │   │   └── controllers/
-│   │       └── exampleController.ts
-│   └── shared/                  # Geteilter Code (Client & Server)
-│       ├── config.ts            # Konfiguration
-│       ├── locale.ts            # Universeller Translation Manager
-│       └── types.ts             # TypeScript Interfaces & Types
-├── web/                         # Vue 3 NUI Frontend
+│   └── shared/                  # Shared typings, locale helpers, and constants
+│       ├── config.ts
+│       ├── locale.ts
+│       └── types.ts
+├── web/                         # Vue 3 NUI application
 │   ├── src/
-│   │   ├── App.vue              # Haupt-Komponente & NUI Dispatcher
-│   │   ├── components/          # Vue Tabs, Toasts & Simulator
-│   │   ├── plugins/i18n.ts      # Reaktives i18n Plugin
-│   │   ├── stores/appStore.ts   # Pinia State Management
-│   │   └── utils/fetchNui.ts    # NUI Fetch mit Browser Mocking
+│   │   ├── App.vue              # Root component & NUI message router
+│   │   ├── components/          # Reusable components & local dev simulation bar
+│   │   ├── plugins/i18n.ts      # Reactive frontend localization plugin
+│   │   ├── stores/appStore.ts   # Pinia state management
+│   │   └── utils/fetchNui.ts    # NUI fetch helper with browser mock support
 │   ├── package.json
 │   ├── tailwind.config.js
 │   └── vite.config.ts
-├── fxmanifest.lua               # FiveM Resource Manifest
-├── package.json                 # Root Dependencies & Build Scripts
-└── tsconfig.json
+├── fxmanifest.lua               # FXServer resource manifest
+├── package.json                 # Project dependencies and operational scripts
+└── tsconfig.json                # Base TypeScript compiler settings
+
 ```
 
 ---
 
-## 🚀 Erste Schritte
+## Prerequisites
 
-### 1. Abhängigkeiten installieren
+- **Node.js**: v.0.0 or higher
+- **Package Manager**: npm (v9+) or pnpm / yarn
 
-Installiere die Node-Pakete für das Root-Projekt und das NUI Frontend:
+---
+
+## Getting Started & Setup
+
+Create a new repository from this template via the GitHub UI (**"Use this template"** button) or using the GitHub CLI, then install the dependencies for both the build pipeline and the NUI frontend.
+
+### 1. Initialize from Template
+
+Using the GitHub CLI:
 
 ```bash
-# Im Root-Ordner (it_tsTemplate)
+gh repo create <your-resource-name> --template it_scripts/it_tsTemplate
+cd <your-resource-name>
+```
+
+Or manually clone your newly created repository:
+
+```bash
+git clone https://github.com/it-scripts/it_tsTemplate.git
+cd <it_tsTemplate>
+```
+
+### 2. Configure Resource Name
+
+Update the `name` field in root `package.json` to match your intended FiveM resource name. The build and packaging scripts use this identifier for exports and bundles.
+
+### 3. Install Dependencies
+
+```bash
+# Install root tooling & script dependencies
 npm install
 
-# Im Web-Ordner
+# Install Vue 3 NUI frontend dependencies
 npm --prefix web install
 ```
 
 ---
 
-## 💻 Entwicklung (Development)
+## Development Workflow
 
-### Web Interface im Browser testen (Hot Reload)
+### 1. Standalone UI Development (Browser)
+
+To build and iterate on the NUI without launching FiveM or connecting to a server:
 
 ```bash
 npm run dev:web
 ```
 
-Öffne `http://localhost:3000` im Browser. Oben erscheint die **Dev Browser Simulator Bar**, mit der du Events simulieren, das UI öffnen/schließen und Sprachen wechseln kannst.
+Navigate to `http://localhost:3000`. The integrated simulation bar allows you to trigger mock NUI events, simulate opening/closing UI layers, and switch active locale files.
 
-### Live-Watching für FiveM Client & Server
+### 2. Client & Server Script Watching
+
+Recompiles `src/client` and `src/server` on every file change:
 
 ```bash
 npm run watch:scripts
 ```
 
-### Alles zusammen starten
+### 3. Concurrent Development Mode
+
+Runs both the web dev server and script watchers simultaneously:
 
 ```bash
 npm run dev
@@ -109,79 +143,184 @@ npm run dev
 
 ---
 
-## 📦 Kompilieren & Deployment auf FiveM
+## Building & Deployment
 
-### Schneller Build
+### Quick Build
+
+Compile all source code into production assets:
 
 ```bash
 npm run build
 ```
 
-Kompiliert das NUI nach `dist/web` und die TypeScript-Scripts nach `dist/client.js` und `dist/server.js`.
+This compiles:
 
-### Fertiges Server-Package erstellen (Ready-to-Deploy)
+- Vue frontend to `dist/web/`
+- Client bundle to `dist/client.js`
+- Server bundle to `dist/server.js`
+
+### Release Packaging
+
+To prepare a fully self-contained resource for production deployment:
 
 ```bash
 npm run package
 ```
 
-Dieser Befehl führt einen vollen Production-Build aus und erstellt:
+The script performs the following actions:
 
-1. Den Ordner `release/<script_name>/` (enthält nur die fertigen Produktionsdateien wie `fxmanifest.lua`, `dist/`, `locales/`).
-2. Das ZIP-Archiv `release/<script_name>.zip`.
+1. Compiles frontend and backend assets with production optimizations.
+2. Identifies the target resource name from `package.json` (`name` field).
+3. Copies all necessary runtime files (`fxmanifest.lua`, `config.json`, `dist/`, `locales/`) into `release/<resource_name>/`.
+4. Creates a compressed deployment archive: `release/<resource_name>.zip`.
 
-👉 **Installation auf FiveM Server:**
-Kopiere einfach den Ordner `release/<script_name>` in deinen FiveM `server-data/resources/` Ordner und füge `ensure <script_name>` zu deiner `server.cfg` hinzu!
+#### Installing on FXServer:
+
+1. Copy the folder `release/<resource_name>` into your server's `resources/` directory.
+2. Add `ensure <resource_name>` to your `server.cfg`.
 
 ---
 
-## 🌐 Übersetzungssystem (Neue Sprache hinzufügen)
+## Localization (i18n)
 
-1. Erstelle eine neue JSON-Datei in `locales/<sprache>.json` (z. B. `locales/es.json` für Spanisch).
-2. Kopiere die Struktur aus `locales/en.json` und passe die Übersetzungen an.
-3. Im Script aufrufen:
+### Adding a New Language
+
+1. Add a new locale file in `locales/<lang_code>.json` (e.g., `locales/fr.json`):
+
+```json
+{
+  "general": {
+    "welcome": "Bienvenue",
+    "action_executed": "Action exécutée: %{action}"
+  }
+}
+```
+
+2. Ensure identical key structures matching `locales/en.json`.
+
+### Consuming Translations in Code
 
 ```typescript
 import { t } from "./shared/locale";
 
-// Einfacher Text
-const welcomeMsg = t("general.welcome");
+// Static string lookup
+const welcomeMessage = t("general.welcome");
 
-// Mit Parametern
-const actionMsg = t("general.action_executed", { action: "Reparieren" });
+// Variable interpolation
+const actionMessage = t("general.action_executed", { action: "Repair" });
 ```
 
 ---
 
-## 🎮 FiveM In-Game Befehle & Tasten
+## Default Controls & Commands
 
-- **Taste:** `F5` (Im GTA-Menü unter Tastenbelegungen anpassbar)
-- **Chatbefehl:** `/template`
+| Trigger     | Default Input | Context / Behavior                                                               |
+| ----------- | ------------- | -------------------------------------------------------------------------------- |
+| **Command** | `/template`   | Toggles the default template NUI interface.                                      |
+| **Keybind** | `F5`          | Mapped via FiveM Key Mapping (`registerKeyMapping`). Rebindable in GTA Settings. |
 
 ---
 
-## 🏷️ Version Bumping (Automatisches Bumpen)
+## Version Management
 
-Über das Skript `scripts/bump-version.mjs` kannst du die Version deines Skripts in allen relevanten Dateien (`package.json`, `web/package.json` sowie die `version '...'`-Zeile in `fxmanifest.lua`) synchronisieren:
+The repository includes a SemVer synchronization script that updates the `version` field across `package.json`, `web/package.json`, and `fxmanifest.lua` simultaneously:
 
 ```bash
-# Patch / Bugfix (1.0.0 -> 1.0.1)
+# Increment patch version (e.g., 1.0.0 -> 1.0.1)
 npm run bump:patch
 
-# Minor / Neues Feature (1.0.0 -> 1.1.0)
+# Increment minor version (e.g., 1.0.0 -> 1.1.0)
 npm run bump:minor
 
-# Major / Breaking Change (1.0.0 -> 2.0.0)
+# Increment major version (e.g., 1.0.0 -> 2.0.0)
 npm run bump:major
 
-# Oder eine gezielte Version setzen:
+# Set an explicit version
 npm run bump 1.2.3
 ```
 
-> **Hinweis:** Die `fx_version` (z. B. `'cerulean'`) in der `fxmanifest.lua` wird dabei **nicht** verändert!
+---
+
+## Releases & Automated Changelog
+
+Releases are triggered automatically via GitHub Actions whenever a Git tag matching `v*.*.*` is pushed.
+
+### Commit Conventions
+
+Release notes are parsed by `scripts/changelog.mjs` using the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+```text
+<type>(<optional scope>): <description>
+```
+
+| Type       | Description                                                 |
+| ---------- | ----------------------------------------------------------- |
+| `feat`     | New user-facing features or capabilities                    |
+| `fix`      | Bug fixes and patches                                       |
+| `perf`     | Code changes that improve performance                       |
+| `refactor` | Structural changes that neither fix a bug nor add a feature |
+| `docs`     | Documentation updates                                       |
+| `style`    | Formatting, missing semi-colons, whitespace                 |
+| `test`     | Adding or correcting unit and integration tests             |
+| `chore`    | Build tasks, tool configs, or auxiliary changes             |
+| `ci`       | CI/CD pipeline and deployment adjustments                   |
+
+### Publishing a New Release
+
+1. Bump the resource version:
+
+```bash
+npm run bump:minor # or bump:patch / bump:major
+```
+
+2. Commit the updated version files:
+
+```bash
+git add package.json web/package.json fxmanifest.lua
+git commit -m "chore(release): bump version to 1.1.0"
+```
+
+3. Tag the commit and push:
+
+```bash
+git tag v1.1.0
+git push origin main --tags
+```
+
+GitHub Actions will compile the production bundle, generate categorized release notes from git history, and publish the `.zip` archive to the repository's Releases page.
 
 ---
 
-## 📄 Lizenz
+## License
 
-MIT License.
+This project is licensed under the [MIT License](https://www.google.com/search?q=LICENSE).
+
+---
+
+<br>
+<table>
+  <tr>
+    <td><h4 align="center">Legal Notices</h4></td>
+  </tr>
+  <tr>
+    <td>
+      it_tsTemplate (it-scripts)<br><br>
+      Copyright (c) 2026 <a href="https://github.com/it-scripts">it-scripts</a><br><br>
+      Permission is hereby granted, free of charge, to any person obtaining a copy
+      of this software and associated documentation files (the "Software"), to deal
+      in the Software without restriction, including without limitation the rights
+      to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+      copies of the Software, and to permit persons to whom the Software is
+      furnished to do so, subject to the following conditions:<br><br>
+      The above copyright notice and this permission notice shall be included in all
+      copies or substantial portions of the Software.<br><br>
+      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+      IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+      FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+      AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+      LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+      OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+      SOFTWARE.
+    </td>
+  </tr>
+</table>
