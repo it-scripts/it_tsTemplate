@@ -36,7 +36,7 @@ const serverConfig = {
   entryPoints: [resolve(rootDir, 'src/server/server.ts')],
   bundle: true,
   outfile: resolve(rootDir, 'dist/server.js'),
-  target: 'node16',
+  target: 'node22',
   format: 'cjs',
   platform: 'node',
   minify: isProduction,
