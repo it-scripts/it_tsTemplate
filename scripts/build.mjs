@@ -10,12 +10,11 @@ const rootDir = resolve(__dirname, '..');
 const isWatch = process.argv.includes('--watch');
 const isProduction = process.env.NODE_ENV === 'production' || process.argv.includes('--prod');
 
-// Sicherstellen, dass dist Ordner existiert
 if (!existsSync(resolve(rootDir, 'dist'))) {
   mkdirSync(resolve(rootDir, 'dist'), { recursive: true });
 }
 
-// Client Build Konfiguration
+// Client Build config
 const clientConfig = {
   entryPoints: [resolve(rootDir, 'src/client/client.ts')],
   bundle: true,
@@ -31,7 +30,7 @@ const clientConfig = {
   logLevel: 'info',
 };
 
-// Server Build Konfiguration
+// Server Build config
 const serverConfig = {
   entryPoints: [resolve(rootDir, 'src/server/server.ts')],
   bundle: true,
@@ -48,7 +47,7 @@ const serverConfig = {
 };
 
 async function run() {
-  console.log(`[Build] Starte TypeScript Build (${isProduction ? 'Production' : 'Development'})...`);
+  console.log(`[Build] Start TypeScript build (${isProduction ? 'Production' : 'Development'})...`);
 
   try {
     if (isWatch) {
@@ -58,16 +57,16 @@ async function run() {
 
       await clientCtx.watch();
       await serverCtx.watch();
-      console.log('[Build] Watcher aktiv. Änderungen werden automatisch kompiliert.');
+      console.log('[Build] Watcher is active. Changes are automatically compiled.');
     } else {
       await Promise.all([
         build(clientConfig),
         build(serverConfig)
       ]);
-      console.log('[Build] Client & Server Scripts erfolgreich kompiliert!');
+      console.log('[Build] Client and Server Scripts Compiled Successfully!');
     }
   } catch (error) {
-    console.error('[Build] Fehler beim Kompilieren:', error);
+    console.error('[Build] Compilation Error:', error);
     process.exit(1);
   }
 }

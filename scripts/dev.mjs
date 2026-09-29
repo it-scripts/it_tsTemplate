@@ -6,19 +6,19 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
-console.log('🚀 Starte Entwicklungs-Umgebung (Web Dev Server + TS Scripts Watcher)...');
+console.log('Start the development environment (Web Dev Server + TS Scripts Watcher)...');
 
 const isWindows = process.platform === 'win32';
 const npmCmd = isWindows ? 'npm.cmd' : 'npm';
 
-// Starte Vite Dev Server
+// Starting Vite Dev Server
 const webProcess = spawn(npmCmd, ['--prefix', 'web', 'run', 'dev'], {
   cwd: rootDir,
   stdio: 'inherit',
   shell: true
 });
 
-// Starte TS Scripts Watcher
+// Starting TS Scripts Watcher
 const scriptsProcess = spawn(npmCmd, ['run', 'watch:scripts'], {
   cwd: rootDir,
   stdio: 'inherit',

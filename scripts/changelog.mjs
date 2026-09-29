@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
-// Resource Name & Version aus package.json lesen
+// Read Resource Name & Version from package.json
 const pkgPath = path.resolve(rootDir, 'package.json');
 const pkg = fs.existsSync(pkgPath) ? JSON.parse(fs.readFileSync(pkgPath, 'utf8')) : {};
 const resourceName = process.env.PKG_NAME || pkg.name || 'fivem-resource';
